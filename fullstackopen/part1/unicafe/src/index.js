@@ -2,23 +2,6 @@ import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
 
-
-/*const App = () => {
-  const [ counter, setCounter ] = useState(0)
-
-  return (
-    <div>
-      <div>{counter}</div>
-      <button onClick={() => setCounter(counter + 1)}>
-        plus
-      </button>
-      <button onClick={() => setCounter(0)}>
-        zero
-      </button>
-    </div>
-  )
-}*/
-
 const Line = ({text, attribute}) => {
   return <p>{text} {attribute}</p>
 }
@@ -44,7 +27,7 @@ const Statistics = ({ good, neutral, bad }) => {
   if (all!=0) { //pasa por aqui si ya se ha pulsado algun boton
     return (
       <>
-        <Subtitle text="Statistics" />
+        <Subtitle text='statistics' />
         <Contadores
           good={good}
           neutral={neutral}
@@ -58,13 +41,8 @@ const Statistics = ({ good, neutral, bad }) => {
   }
   return (
     <>
-      <Subtitle text="Statistics" />
-      <Contadores
-        good={good}
-        neutral={neutral}
-        bad={bad}
-      />
-      <Line text='please press a button to show statistics' />
+      <Subtitle text='statistics' />
+      <Line text='No feedback given' />
     </>
   )
 }
@@ -85,7 +63,7 @@ const App = () => {
 
   return (
     <div>
-      <Subtitle text="give feedback" />
+      <Subtitle text='give feedback' />
       <button onClick={increaseGood}>
         good
       </button>
