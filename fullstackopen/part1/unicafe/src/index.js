@@ -1,9 +1,15 @@
 import React, { useState } from 'react'
-import ReactDOM from 'react-dom'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+//Changed imports in order to avoid warnings with React 18
 
-
-const Statistic = ({text, statistic}) => {
-  return <p>{text} {statistic}</p>
+const Statistic = ({text, statistic, symbol}) => {
+  return(
+    <tr>
+      <td>{text}</td>
+      <td>{statistic} {symbol}</td>
+    </tr>
+  )
 }
 
 const Button = ({ handleClick, text}) => (
@@ -19,14 +25,16 @@ const Statistics = ({ good, neutral, bad }) => {
     return <p>No feedback given</p>
 
   return (
-    <>
-      <Statistic text='good' statistic={good} />
-      <Statistic text='neutral' statistic={neutral} />
-      <Statistic text='bad' statistic={bad} />
-      <Statistic text='all' statistic={all} />
-      <Statistic text='average' statistic={(good-bad)/all} />
-      <Statistic text='positive' statistic={good/all*100} />
-    </>
+    <table>
+      <tbody>
+        <Statistic text='good' statistic={good} />
+        <Statistic text='neutral' statistic={neutral} />
+        <Statistic text='bad' statistic={bad} />
+        <Statistic text='all' statistic={all} />
+        <Statistic text='average' statistic={(good-bad)/all} />
+        <Statistic text='positive' statistic={good/all*100} symbol='%' />
+      </tbody>
+    </table>
   )
 }
 
@@ -56,9 +64,12 @@ const App = () => {
   )
 }
 
+//Done this in order to avoid warnings with React 18
+const rootElement = document.getElementById("root");
+const root = createRoot(rootElement);
 
-
-
-ReactDOM.render(<App />,
-  document.getElementById('root')
+root.render(
+  <StrictMode>
+    <App />
+  </StrictMode>
 )
