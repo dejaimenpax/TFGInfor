@@ -2,47 +2,30 @@ import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
 
-const Line = ({text, attribute}) => {
-  return <p>{text} {attribute}</p>
+const Statistic = ({text, statistic}) => {
+  return <p>{text} {statistic}</p>
 }
 
-const Button = (props) => (
-  <button onClick={props.handleClick}>
-    {props.text}
+const Button = ({ handleClick, text}) => (
+  <button onClick={handleClick}>
+    {text}
   </button>
 )
 
-const Contadores = ({ good, neutral, bad }) => {
-  return (
-    <>
-      <Line text='good' attribute={good} />
-      <Line text='neutral' attribute={neutral} />
-      <Line text='bad' attribute={bad} />
-    </>
-  )
-}
 const Statistics = ({ good, neutral, bad }) => {
 
   const all = good+neutral+bad
-  if (all!=0) { //pasa por aqui si ya se ha pulsado algun boton
-    return (
-      <>
-        <Subtitle text='statistics' />
-        <Contadores
-          good={good}
-          neutral={neutral}
-          bad={bad}
-        />
-        <Line text='all' attribute={all} />
-        <Line text='average' attribute={(good-bad)/all} />
-        <Line text='positive' attribute={good/all*100} />
-      </>
-    )
-  }
+  if (all==0)
+    return <p>No feedback given</p>
+
   return (
     <>
-      <Subtitle text='statistics' />
-      <Line text='No feedback given' />
+      <Statistic text='good' statistic={good} />
+      <Statistic text='neutral' statistic={neutral} />
+      <Statistic text='bad' statistic={bad} />
+      <Statistic text='all' statistic={all} />
+      <Statistic text='average' statistic={(good-bad)/all} />
+      <Statistic text='positive' statistic={good/all*100} />
     </>
   )
 }
@@ -64,15 +47,10 @@ const App = () => {
   return (
     <div>
       <Subtitle text='give feedback' />
-      <button onClick={increaseGood}>
-        good
-      </button>
-      <button onClick={increaseNeutral}>
-        neutral
-      </button>
-      <button onClick={increaseBad}>
-        bad
-      </button>
+      <Button handleClick={increaseGood} text='good' />
+      <Button handleClick={increaseNeutral} text='neutral' />
+      <Button handleClick={increaseBad} text='bad' />
+      <Subtitle text='statistics' />
       <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
   )
