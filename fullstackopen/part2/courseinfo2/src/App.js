@@ -15,12 +15,27 @@ const App = () => {
 
     console.log('Button clicked', event.target)
 
-    const personObject = {
-      name: newName,
-      id: persons.length + 1,
+    const arrayAux = persons.filter( x => {
+      console.log('Un nombre de la lista es', x.name)
+      console.log(`El nombre con el que cotejar es ${newName}`)
+      return x.name === `${newName}`
+    })
+
+    console.log('The filtered array is', arrayAux)
+
+    if (arrayAux.length !== 0) {
+      alert(`${newName} is already added to the phonebook`)
     }
 
-    setPersons(persons.concat(personObject))
+    else{
+      const personObject = {
+        name: newName,
+        id: persons.length + 1,
+      }
+  
+      setPersons(persons.concat(personObject))
+    }
+
     setNewName('')
   }
 
