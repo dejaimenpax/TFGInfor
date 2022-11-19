@@ -4,17 +4,23 @@ import { createRoot } from "react-dom/client";
 
 const Header = ({ course }) => <h1>{course}</h1>
 
-const Total = ({ sum }) => <p>Number of exercises {sum}</p>
+const Total = ({ sum }) => <p><strong>total of {sum} exercises</strong></p>
 
 const Part = ({ part }) =>
   <p>
     {part.name} {part.exercises}
   </p>
 
-const Content = ({ parts }) =>
-  <>
-    {parts.map( x => <Part key={x.id} part={x} />)}
-  </>
+const Content = ({ parts }) => {
+  const totalAmount = parts.reduce( (suma, parte) =>  suma + parte.exercises , 0 )
+  console.log(totalAmount)
+  return (
+    <>
+      {parts.map( x => <Part key={x.id} part={x} />)}
+      <Total sum={totalAmount} />
+    </> 
+  )
+}
 
 const Course = ({ course }) =>
     <>
@@ -41,6 +47,11 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3,
+      },
+      {
+        name: 'Redux',
+        exercises: 11,
+        id:4
       },
     ],
   }
