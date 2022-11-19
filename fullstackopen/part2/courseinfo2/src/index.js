@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
-const Header = ({ course }) => <h1>{course}</h1>
+const Header1 = ({ text }) => <h1>{text}</h1>
+const Header2 = ({ course }) => <h2>{course}</h2>
 
 const Total = ({ sum }) => <p><strong>total of {sum} exercises</strong></p>
 
@@ -24,7 +25,7 @@ const Content = ({ parts }) => {
 
 const Course = ({ course }) => 
   <>
-    <Header course={course.name} />
+    <Header2 course={course.name} />
     <Content parts={course.parts} /> 
   </>
         
@@ -32,6 +33,7 @@ const Course = ({ course }) =>
     
 const AllCourses = ({ all }) =>
     <>
+      <Header1 text='Web development curriculum' />
       {all.map( x => <Course key={x.id} course={x} /> )}
     </>
 
