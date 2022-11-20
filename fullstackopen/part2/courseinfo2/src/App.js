@@ -3,19 +3,23 @@ import Person from './Components/Person'
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { 
-      name: 'Arto Hellas',
-      number: '39-445323523',
-      id: 1
-    }
+    { name: 'Arto Hellas', number: '040-123456', id: 1},
+    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2},
+    { name: 'Dan Abramov', number: '12-43-234345', id: 3},
+    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4}
+
   ]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
 
+  const [newFilter, setNewFilter] = useState('')
+ 
+
+
   const addPerson = (event) => {
     event.preventDefault()
 
-    console.log('Button clicked', event.target)
+    console.log('Add person button clicked', event.target)
 
     const arrayAux = persons.filter( x => {
       console.log('Un nombre de la lista es', x.name)
@@ -44,7 +48,6 @@ const App = () => {
   }
 
   const handleNameChange = (event) => {
-    console.log(event.target.value)
     setNewName(event.target.value)
   }
 
@@ -52,10 +55,26 @@ const App = () => {
     setNewNumber(event.target.value)
   }
 
+  const handleFilterChange = (event) => {
+    const auxFilter = event.target.value.toLowerCase()
+    console.log(auxFilter)
+    setNewFilter(auxFilter)
+  }
+
   return (
     <>
-
       <h2>Phonebook</h2>
+
+      <form>
+        <div>filter shown with
+          <input
+            value={newFilter}
+            onChange={handleFilterChange}
+          />
+        </div>
+      </form>
+
+      <h2>add a new</h2>
 
       <form onSubmit={addPerson}>
 
@@ -77,7 +96,10 @@ const App = () => {
 
       </form>
 
-      {persons.map( x => <Person key={x.id} person={x} />)}
+      {persons
+        .filter(x => x.name.toLowerCase().includes(`${newFilter}`))
+        .map( y => <Person key={y.id} person={y} />)
+      }
 
     </>
   )
