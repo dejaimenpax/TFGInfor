@@ -6,8 +6,8 @@ const CountryData = (props) => {
             <p>population {props.population}</p>
             <h2>languages</h2>
             <ul>
-                {props.languages.map(x =>
-                     <li key={props.languages.indexOf(x)}>{x.name}</li>)
+                {props.languages.map(x => 
+                    <li key={props.languages.indexOf(x)}>{x.name}</li>)
                 }
             </ul>
             <img 

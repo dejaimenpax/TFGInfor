@@ -8,6 +8,7 @@ const App = () => {
 
   const [newFilter, setNewFilter] = useState('')
 
+
   useEffect(() => {
     console.log('effect')
     axios
@@ -25,10 +26,16 @@ const App = () => {
     setNewFilter(auxFilter)
   }
 
+  const handleShowClick = (name) => {
+    const auxFilter = name.toLowerCase()
+    setNewFilter(auxFilter)
+  }
+
+
   return (
     <>
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
-      <Countries countries={countries} filter={newFilter} />
+      <Countries countries={countries} filter={newFilter} handleShowClick={handleShowClick}  />
     </>
   )
 }
