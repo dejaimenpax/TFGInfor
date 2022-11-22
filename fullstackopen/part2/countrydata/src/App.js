@@ -1,3 +1,11 @@
+/*
+FOR WEATHER API PURPOSES:
+set "REACT_API_KEY=abcdef" && npm start         IN WINDOWS
+REACT_API_KEY=abcdef npm start              IN UNIX
+*/
+
+
+
 import { useState, useEffect} from 'react'
 import axios from 'axios'
 import Filter from './Components/Filter'
@@ -8,15 +16,18 @@ const App = () => {
 
   const [newFilter, setNewFilter] = useState('')
 
+  
+
 
   useEffect(() => {
-    console.log('effect')
+    console.log('effect downloading countries')
     axios
       .get('https://restcountries.com/v2/all')
       .then(response => {
         console.log('promise fulfilled')
         setCountries(response.data)
       })
+      
   }, [])
   console.log('render', countries.length, 'countries')
 
@@ -35,7 +46,11 @@ const App = () => {
   return (
     <>
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
-      <Countries countries={countries} filter={newFilter} handleShowClick={handleShowClick}  />
+      <Countries 
+        countries={countries} 
+        filter={newFilter} 
+        handleShowClick={handleShowClick}
+      />
     </>
   )
 }
