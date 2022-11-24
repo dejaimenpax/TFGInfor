@@ -6,10 +6,15 @@ const getAll = () => {
     return axios.get(baseUrl)
 }
 
-const create = (newObject) => {
+const erase = (id) => {
+    return axios.delete(`${baseUrl}/${id}`)
+}
+
+const create = newObject => {
     return axios.post(baseUrl, newObject)
 }
 
 
 
-export default { getAll, create }
+
+export default { getAll, create, erase}

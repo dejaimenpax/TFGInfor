@@ -47,13 +47,12 @@ const App = () => {
       const personObject = {
         name: newName,
         number: newNumber,
-        id: persons.length + 1,
       }
 
       personService
         .create(personObject)
         .then(response => {
-        setPersons(persons.concat(response.data))
+          setPersons(persons.concat(response.data))
         })
 
     }
@@ -76,6 +75,17 @@ const App = () => {
     setNewFilter(auxFilter)
   }
 
+  const erasePerson = (person) => {
+    console.log('Entra por el borrado')
+    //mucho cuidado como llamamos en Person.js a esta funcion, debe ser como () => erasePerson(id)
+    if (window.confirm(`Delete ${person.name}?`)){
+      personService
+      .erase(person.id)
+      .then(response => {
+        setPersons(persons.filter(x => x.id!==person.id))
+      })
+    }
+  }
 
   return (
     <>
@@ -95,7 +105,7 @@ const App = () => {
 
       <h3>Numbers</h3>
 
-      <Persons persons={persons} newFilter={newFilter} />
+      <Persons persons={persons} newFilter={newFilter} erasePerson={erasePerson} />
 
     </>
   )
