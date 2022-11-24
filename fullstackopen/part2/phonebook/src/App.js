@@ -38,11 +38,7 @@ const App = () => {
 
     console.log('The filtered array is', arrayAux)
 
-    if (arrayAux.length !== 0) {
-      alert(`${newName} is already added to the phonebook`)
-    }
-
-    else{ //Aqui añade
+    if (arrayAux.length===0){
 
       const personObject = {
         name: newName,
@@ -53,8 +49,17 @@ const App = () => {
         .create(personObject)
         .then(response => {
           setPersons(persons.concat(response.data))
-        })
+      })
+      
+    }
 
+    else if (window.confirm(`${newName} is already added to the phonebook, replace the old number with a old one?`)){
+      const changedPerson = {...arrayAux[0], number: newNumber}
+      personService
+        .update(arrayAux[0].id, changedPerson)
+        .then(response => {
+          setPersons(persons.map(x => x.id !== arrayAux[0].id ? x : changedPerson))
+        })
     }
 
     setNewNumber('')
