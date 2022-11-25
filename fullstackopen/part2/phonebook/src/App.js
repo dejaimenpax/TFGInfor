@@ -2,6 +2,7 @@ import { useState, useEffect} from 'react'
 import Persons from './Components/Persons'
 import Filter from './Components/Filter'
 import PersonForm from './Components/PersonForm'
+import Notification from './Components/Notification'
 
 import personService from './Services/Persons'
 
@@ -11,6 +12,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [feedbackMessage, setFeedbackMessage] = useState('')
+  const [feedbackType, setFeedBackType] = useState('')
 
   useEffect(() => {
     console.log('effect')
@@ -48,8 +51,14 @@ const App = () => {
       personService
         .create(personObject)
         .then(response => {
+          setFeedBackType('success')
+          setFeedbackMessage(`Added ${newName}`)
+          setTimeout(() => {
+            setFeedbackMessage('')
+            setFeedBackType('')
+          }, 5000)
           setPersons(persons.concat(response.data))
-      })
+        })   
       
     }
 
@@ -58,7 +67,22 @@ const App = () => {
       personService
         .update(arrayAux[0].id, changedPerson)
         .then(response => {
-          setPersons(persons.map(x => x.id !== arrayAux[0].id ? x : changedPerson))
+          setFeedBackType('success')
+          setFeedbackMessage(`Number of ${newName} has been changed`)
+          setTimeout(()=> {
+            setFeedbackMessage('')
+            setFeedBackType('')
+          }, 5000)
+          setPersons(persons.map(x => x.id !== arrayAux[0].id ? x : response.data))
+        })
+        .catch(error => {
+          setFeedBackType('error')
+          setFeedbackMessage(`Information of ${newName} has already been removed from the server`)
+          setTimeout(()=> {
+            setFeedbackMessage('')
+            setFeedBackType('')
+          }, 5000)
+          setPersons(persons.filter(x => x.id !== changedPerson.id))
         })
     }
 
@@ -95,6 +119,8 @@ const App = () => {
   return (
     <>
       <h2>Phonebook</h2>
+      
+      <Notification message={feedbackMessage} type={feedbackType}/>
 
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
 
