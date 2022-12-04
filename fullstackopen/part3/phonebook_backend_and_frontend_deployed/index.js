@@ -1,6 +1,13 @@
+//For environment variables
+require('dotenv').config()
+
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
+
+//For Mongo DB
+const Person = require('./models/person')
+
 
 const app = express()
 
@@ -45,26 +52,32 @@ app.get('/', (request, response) => {
     response.send('<h1>Hello World!</h1>')
 })
 
+
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+  Person.find({}).then(
+    x => response.json(x)
+  )
 })
+
+
 app.get('/api/info', (request, response) => {
     response.send(`<p>Phonebook has info for ${persons.length} people</p>` 
     + `${new Date()}`)
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    console.log(request.params.id, typeof request.params.id)
-    const id = Number(request.params.id)
-    const person = persons.find(x => x.id === id)
-    
-    if (person) { //if undefined is false
-        response.json(person)
-    } else {
-        response.statusMessage = "There is no person with that id" //esto cambia el "NOT FOUND"
-        response.status(404).end()
-    }
+  console.log(request.params.id, typeof request.params.id)
+  const id = Number(request.params.id)
+  const person = persons.find(x => x.id === id)
+  
+  if (person) { //if undefined is false
+      response.json(person)
+  } else {
+      response.statusMessage = "There is no person with that id" //esto cambia el "NOT FOUND"
+      response.status(404).end()
+  }
 })
+
 
 app.delete('/api/persons/:id', (request, response) => {
     console.log('Entra en delete')
@@ -101,17 +114,18 @@ app.post('/api/persons', (request, response) => {
         })
     }
     
-    const person = {
+    const person = new Person ({
         name: body.name,
         number: body.number,
         id: generateId()
-    }
+    })
 
     //console.log(person)
-    persons = persons.concat(person)
+    person.save().then(
+      savedPerson => response.json(savedPerson)
+    )
     //console.log('Concatenada!!!')
 
-    response.json(person)
 })
 
 
@@ -121,7 +135,7 @@ const unknownEndpoint = (request, response) => {
 
 app.use(unknownEndpoint)
 
-const PORT = process.env.PORT || 3001
+const PORT = 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
