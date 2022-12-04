@@ -60,40 +60,41 @@ app.get('/api/persons', (request, response) => {
 })
 
 
-app.get('/api/info', (request, response) => {
-    response.send(`<p>Phonebook has info for ${persons.length} people</p>` 
-    + `${new Date()}`)
+app.get('/api/info', (request, response, next) => {
+    const date = new Date()
+    Person.count()
+      .then(
+        count => response.send(`<p>Phonebook has info for ${count} people</p>`
+        + `${date}`)
+      )
 })
 
-app.get('/api/persons/:id', (request, response) => {
-  console.log(request.params.id, typeof request.params.id)
-  const id = Number(request.params.id)
-  const person = persons.find(x => x.id === id)
-  
-  if (person) { //if undefined is false
-      response.json(person)
-  } else {
-      response.statusMessage = "There is no person with that id" //esto cambia el "NOT FOUND"
-      response.status(404).end()
-  }
+app.get('/api/persons/:id', (request, response, next) => {
+  Person.findById(request.params.id)
+    .then(person => {
+      if (person) {
+        response.json(person)
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch(error => next(error))
 })
 
 
-app.delete('/api/persons/:id', (request, response) => {
-    console.log('Entra en delete')
-    const id = Number(request.params.id)
-    console.log(id)
-    persons = persons.filter(x => x.id !== id)
-  
-    response.status(204).end()
+app.delete('/api/persons/:id', (request, response, next) => {
+  Person.findByIdAndRemove(request.params.id)
+    .then(result => {
+      response.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
-const generateId = () => {
-    return Math.floor(Math.random() * 100000);
-} 
+
   
 app.post('/api/persons', (request, response) => {
     console.log('Entra en post')
+    console.log(request.body)
     const body = request.body
   
     if (!body.name) {
@@ -108,23 +109,26 @@ app.post('/api/persons', (request, response) => {
         })
     }
 
-    if (persons.find(x => x.name === body.name)) {
-        return response.status(400).json({ 
-          error: 'name must be unique'
-        })
-    }
-    
-    const person = new Person ({
-        name: body.name,
-        number: body.number,
-        id: generateId()
-    })
 
-    //console.log(person)
-    person.save().then(
-      savedPerson => response.json(savedPerson)
-    )
-    //console.log('Concatenada!!!')
+    Person.count({name: `${body.name}`})
+      .then(
+        count => {
+          if (count!==0) 
+            return response.status(400).json({error: 'name must be unique'})
+          else{
+            const person = new Person ({
+              name: body.name,
+              number: body.number,
+            })
+      
+            //console.log(person)
+            person.save().then(
+              savedPerson => response.json(savedPerson)
+            )
+          }
+        }
+      )
+      .catch(error=>nex(error))
 
 })
 
@@ -132,8 +136,20 @@ app.post('/api/persons', (request, response) => {
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
-
 app.use(unknownEndpoint)
+
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } 
+
+  next(error)
+}
+app.use(errorHandler)
+
 
 const PORT = 3001
 app.listen(PORT, () => {
