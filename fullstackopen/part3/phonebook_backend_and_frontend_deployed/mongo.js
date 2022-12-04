@@ -20,11 +20,10 @@ if (process.argv.length===3){
     mongoose
         .connect(url)
         .then((result) => {
-            console.log('connected')
-
+            console.log('phonebook:')
             Person.find({}).then(result => {
-                result.forEach(note => {
-                    console.log(note)
+                result.forEach(x => {
+                    console.log(`${x.name} ${x.number}`)
                 })
                 mongoose.connection.close()
               })
